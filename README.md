@@ -51,6 +51,11 @@ El frontend está estructurado en **componentes reutilizables**, incluyendo:
 - git clone https://github.com/adryborja/frontend-pwa-inventarios.git
 - git clone https://github.com/adryborja/backend-pwa-inventarios.git
 
+### **Configurar Base de Datos**
+1. Crear una base de datos en PostgreSQL llamada `control-inventario`
+2. Configurar la conexión a la base de datos en DBeaver.
+3. Verificar que los parámetros de conexión en el archivo de configuración del backend coincidan con su configuración local.
+
 ### **Configurar backend**
 
 # Instalar dependencias
