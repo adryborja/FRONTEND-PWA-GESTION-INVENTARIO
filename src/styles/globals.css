@@ -1,0 +1,22 @@
+.navbar-container {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-bottom: 2px solid #ddd;}
+
+.sidebar-container {
+    width: 250px;
+    height: 100vh;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-right: 2px solid #ddd;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.alerts-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
