@@ -48,8 +48,8 @@ El frontend está estructurado en **componentes reutilizables**, incluyendo:
 
 ### **Clonar el Repositorio**
 
-- git clone https://github.com/adryborja/frontend-pwa-inventarios.git
-- git clone https://github.com/adryborja/backend-pwa-inventarios.git
+- git clone https://github.com/adryborja/BACKEND-PWA-GESTION-INVENTARIO.git
+- git clone https://github.com/adryborja/FRONTEND-PWA-GESTION-INVENTARIO.git
 
 ### **Configurar Base de Datos**
 1. Crear una base de datos en PostgreSQL llamada `control-inventario`
