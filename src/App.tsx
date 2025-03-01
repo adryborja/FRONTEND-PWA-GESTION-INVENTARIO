@@ -15,6 +15,7 @@ import Roles from "./pages/Roles";
 import Empresas from "./pages/Empresas";
 import Categorias from "./pages/Categorias";
 import { AuthProvider } from "./context/AuthProvider";
+import './App.css';
 
 import "primereact/resources/themes/lara-light-indigo/theme.css"; 
 import "primereact/resources/primereact.min.css";
