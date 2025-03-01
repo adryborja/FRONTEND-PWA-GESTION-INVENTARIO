@@ -97,18 +97,17 @@ export interface AlertaStock {
     estado: string;
     fecha_creacion: string;
 }
-
 export interface Pedido {
     id: number;
-    empresa: Empresa | null;
+    empresa?: { id: number; nombre: string } | null;
     fecha_solicitud: Date | string | null;
     fecha_entrega: Date | string | null;
-    estado: string;
+    estado: "Entregado" | "Pendiente" | "Cancelado";
 }
 
 export interface DetallePedido {
     id: number;
-    pedido?:  { id: number; nombre: string } | null; 
+    pedido: { id: number} | null; 
     producto?: { id: number; nombre: string } | null; 
     cantidad: number;
     precio_unitario: number;

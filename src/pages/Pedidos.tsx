@@ -1,47 +1,13 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import { OrderList } from "../components/Pedidos/OrderList";
-import { OrderForm } from "../components/Pedidos/OrderForm";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
+import { DetailList } from "../components/Pedidos/DetailList";
 
-export const Pedidos: React.FC = () => {
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const orderListRef = useRef<any>(null);
-
-  const handleSaveSuccess = () => {
-    if (orderListRef.current) {
-      orderListRef.current.loadPedidos();
-    }
-    setMostrarFormulario(false);
-  };
-
+const Pedidos: React.FC = () => {
   return (
     <div>
       <h1>📦 Gestión de Pedidos</h1>
-      
-      {/* Botón para abrir el formulario */}
-      <Button 
-        label="Nuevo Pedido" 
-        icon="pi pi-plus" 
-        className="p-button-success mb-3" 
-        onClick={() => setMostrarFormulario(true)} 
-      />
-
-      {/* Componente para mostrar la lista de pedidos */}
-      <OrderList ref={orderListRef} />
-
-      {/* Diálogo para crear un nuevo pedido */}
-      <Dialog 
-        header="Crear Nuevo Pedido" 
-        visible={mostrarFormulario} 
-        style={{ width: '50vw' }}
-        onHide={() => setMostrarFormulario(false)}
-      >
-        <OrderForm 
-          onSaveSuccess={handleSaveSuccess} 
-          onHide={() => setMostrarFormulario(false)} 
-        />
-      </Dialog>
+      <OrderList />
+      <DetailList />
     </div>
   );
 };

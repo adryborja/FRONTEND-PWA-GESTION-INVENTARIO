@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
+import { useEffect, useRef, useState } from "react";
 import { pedidoService } from "../../services/pedidoService";
 import { Pedido } from "../../types/types";
 import { DataTable } from "primereact/datatable";
@@ -8,11 +8,15 @@ import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 import { OrderForm } from "./OrderForm";
 
-export const OrderList = forwardRef((_props, ref) => {
+export const OrderList: React.FC = () => {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
-  const [editDialogVisible, setEditDialogVisible] = useState(false);
+  const [displayDialog, setDisplayDialog] = useState<boolean>(false);
   const toast = useRef<Toast>(null);
+
+  useEffect(() => {
+    loadPedidos();
+  }, []);
 
   const loadPedidos = async () => {
     try {
@@ -29,25 +33,11 @@ export const OrderList = forwardRef((_props, ref) => {
     }
   };
 
- 
-  useImperativeHandle(ref, () => ({
-    loadPedidos
-  }));
-
-  useEffect(() => {
-    loadPedidos();
-  }, []);
-
-  const formatDate = (value: string | Date | null) => {
-    if (!value) return "";
-    const date = new Date(value);
-    return date.toLocaleDateString();
-  };
-
-  const deleteRecord = async (id: number) => {
+  const deletePedido = async (id: number) => {
     try {
       await pedidoService.remove(id);
-      setPedidos(pedidos.filter(p => p.id !== id));
+      setPedidos((prev) => prev.filter((pedido) => pedido.id !== id));
+
       toast.current?.show({
         severity: "success",
         summary: "Éxito",
@@ -65,89 +55,70 @@ export const OrderList = forwardRef((_props, ref) => {
     }
   };
 
-  const editRecord = (pedido: Pedido) => {
-    setSelectedPedido(pedido);
-    setEditDialogVisible(true);
-  };
-
-  const handleEditSuccess = () => {
+  const handleSaveSuccess = (isEdit: boolean) => {
     loadPedidos();
-    setEditDialogVisible(false);
-    setSelectedPedido(null);
+
     toast.current?.show({
       severity: "success",
       summary: "Éxito",
-      detail: "Pedido actualizado correctamente",
+      detail: isEdit ? "Pedido actualizado correctamente" : "Pedido creado correctamente",
       life: 3000,
     });
-  };
 
-  const actionBodyTemplate = (rowData: Pedido) => {
-    return (
-      <div className="flex gap-2">
-        <Button
-          icon="pi pi-pencil"
-          className="p-button-rounded p-button-warning p-button-sm"
-          onClick={() => editRecord(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          className="p-button-rounded p-button-danger p-button-sm"
-          onClick={() => deleteRecord(rowData.id)}
-        />
-      </div>
-    );
-  };
-
-  const hideEditDialog = () => {
-    setEditDialogVisible(false);
-    setSelectedPedido(null);
+    setDisplayDialog(false);
   };
 
   return (
     <div>
       <Toast ref={toast} />
       <h2>Lista de Pedidos</h2>
-      <DataTable
-        value={pedidos}
-        paginator
-        rows={10}
-        responsiveLayout="scroll"
-        emptyMessage="No hay pedidos disponibles"
-      >
-        <Column field="id" header="ID" sortable />
+
+      <Button
+        label="Agregar Pedido"
+        icon="pi pi-plus"
+        className="p-button-success p-mb-3"
+        onClick={() => {
+          setSelectedPedido(null);
+          setDisplayDialog(true);
+        }}
+      />
+
+      <DataTable value={pedidos} paginator rows={5} responsiveLayout="scroll">
+        <Column field="id" header="ID Pedido" sortable />
         <Column field="empresa.nombre" header="Empresa" sortable />
-        <Column
-          field="fecha_solicitud"
-          header="Fecha Solicitud"
-          sortable
-          body={(rowData) => formatDate(rowData.fecha_solicitud)}
-        />
-        <Column
-          field="fecha_entrega"
-          header="Fecha Entrega"
-          sortable
-          body={(rowData) => formatDate(rowData.fecha_entrega)}
-        />
+        <Column field="fecha_solicitud" header="Fecha Solicitud" sortable />
+        <Column field="fecha_entrega" header="Fecha Entrega" sortable />
         <Column field="estado" header="Estado" sortable />
-        <Column body={actionBodyTemplate} header="Acciones" />
+
+        <Column
+          header="Acciones"
+          body={(rowData: Pedido) => (
+            <div className="flex gap-2">
+              <Button
+                icon="pi pi-pencil"
+                className="p-button-rounded p-button-warning"
+                onClick={() => {
+                  setSelectedPedido(rowData);
+                  setDisplayDialog(true);
+                }}
+              />
+              <Button
+                icon="pi pi-trash"
+                className="p-button-rounded p-button-danger"
+                onClick={() => deletePedido(rowData.id)}
+              />
+            </div>
+          )}
+        />
       </DataTable>
 
-      { }
-      <Dialog
-        header="Editar Pedido"
-        visible={editDialogVisible}
-        style={{ width: '50vw' }}
-        onHide={hideEditDialog}
-      >
-        {selectedPedido && (
-          <OrderForm 
-            pedidoToEdit={selectedPedido}
-            onSaveSuccess={handleEditSuccess}
-            onHide={hideEditDialog}
-          />
-        )}
+      <Dialog header={selectedPedido ? "Editar Pedido" : "Nuevo Pedido"} visible={displayDialog} onHide={() => setDisplayDialog(false)}>
+        <OrderForm 
+          pedido={selectedPedido} 
+          onHide={() => setDisplayDialog(false)} 
+          onSaveSuccess={handleSaveSuccess} 
+        />
       </Dialog>
     </div>
   );
-});
+};
